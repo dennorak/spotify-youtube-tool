@@ -9,7 +9,7 @@ class Playlist:
         self.songs =  data["tracks"]["items"]
 
     def getTrack(self, id):
-        return self.songs[id]["track"]["name"] + " " + self.songs[id]["artists"][1]["name"]
+        return self.songs[id]["track"]["name"] + " " + self.songs[id]["track"]["artists"][0]["name"]
 
     def count(self):
         return len(self.songs)

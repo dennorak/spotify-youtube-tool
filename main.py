@@ -24,7 +24,8 @@ def main():
         tracks = []
         sp = Spotify()
         playlist = sp.get_playlist(args.val[0])
-        for i in playlist.count():
+
+        for i in range(playlist.count()):
             tracks.append(playlist.getTrack(i))
         ytm.pull_queue(tracks)
     elif (args.op[0] == "youtube"):

@@ -1,6 +1,6 @@
 from selenium.webdriver.common.by import By
 from selenium import webdriver
-from threading import Thread
+from threading import Thread, active_count
 from time import sleep
 import youtube_dl
 
@@ -14,7 +14,8 @@ class YoutubeMusic:
 
     def pull_queue(self, search_array):
         for query in search_array:
-            Thread(target=self.pull, args=[query]).start()
+            while active_count() > 9: sleep(5)
+            Thread(target=self.pull, args=(query,)).start()
 
     def pull(self, search):
         browser = webdriver.Firefox(options=self.options)
@@ -27,12 +28,12 @@ class YoutubeMusic:
         browser.get(self.BASE_URL + search)
 
         # wait for header filters to render and click 'songs'
-        sleep(1)
+        sleep(3)
         header = browser.find_element(By.XPATH, '//*[@id="chips"]/*[1]')
         header.click()
 
         # wait for the new results to load and get the first song link (formatted)
-        sleep(2)
+        sleep(3)
         result = browser.find_element(By.XPATH, '//*[@id="contents"]/*[1]/div[2]/*[1]/*[1]/*[1]')
         print("Got URL for ", search)
         return result.get_attribute('href').replace('//music.y', '//www.y')
@@ -46,7 +47,7 @@ class YoutubeMusic:
                 'preferredcodec': 'mp3',
                 # 'preferredquality': '192',
             }],
-            'outtmpl': 'downloads/%(title)s.%(ext)s',
+            'outtmpl': 'downloads/%(title)s-%(id)s.%(ext)s',
             'quiet': True
         }
 

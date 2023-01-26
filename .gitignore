@@ -3,3 +3,4 @@ geckodriver.log
 downloads/*
 __pycache__/
 .env
+.cache
