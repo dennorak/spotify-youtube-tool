@@ -4,6 +4,7 @@ from threading import Thread, active_count
 from time import sleep
 import youtube_dl
 
+THREAD_COUNT = 10
 
 class YoutubeMusic:
     def __init__(self):
@@ -14,13 +15,15 @@ class YoutubeMusic:
 
     def pull_queue(self, search_array):
         for query in search_array:
-            while active_count() > 9: sleep(5)
+            while active_count() > THREAD_COUNT-1: sleep(5)
             Thread(target=self.pull, args=(query,)).start()
 
     def pull(self, search):
         browser = webdriver.Firefox(options=self.options)
         url = self.get_url(search, browser)
         self.download(url)
+        browser.close()
+        return
 
     def get_url(self, search, browser):
         # get the page
@@ -54,3 +57,4 @@ class YoutubeMusic:
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
         print("Done downloading ", url)
+        return
